@@ -1,6 +1,6 @@
 import "./AnalyticsPage.css";
-import { useEffect, useState, useRef } from "react";
-import { TodosType } from "../typedefs";
+import { useEffect, useState } from "react";
+import { TodosType } from "../../typedefs";
 import { TodoChart } from "./TodoChart";
 
 type TimeRangeOption = {

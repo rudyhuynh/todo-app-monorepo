@@ -1,4 +1,4 @@
-import type { TodoType } from "../typedefs";
+import type { TodoType } from "../../typedefs";
 
 type TodoItemPropsType = {
   todo: TodoType;

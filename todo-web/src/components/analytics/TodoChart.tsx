@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { TodosType } from "../typedefs";
+import { TodosType } from "../../typedefs";
 import HighCharts, { Options } from "highcharts";
 import {
   dayMs,
@@ -7,7 +7,7 @@ import {
   getLastWeekRange,
   getYesterdayRange,
   hourMs,
-} from "../utils/generateTodoChartData";
+} from "../../utils/generateTodoChartData";
 
 const mapTimeRangeToGran = {
   yesterday: "hour",

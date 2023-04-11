@@ -2,9 +2,9 @@ import "./index.css";
 import "materialize-css/dist/css/materialize.css";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import { TodoListPage } from "./components/TodoListPage";
-import { AnalyticsPage } from "./components/AnalyticsPage";
-import { NavigationBar } from "./components/NavigationBar";
+import { TodoListPage } from "./components/todo-list/TodoListPage";
+import { AnalyticsPage } from "./components/analytics/AnalyticsPage";
+import { NavigationBar } from "./components/shared/NavigationBar";
 import { Routes } from "./typedefs";
 
 const routes: Routes = [

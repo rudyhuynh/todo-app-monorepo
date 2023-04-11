@@ -1,9 +1,9 @@
 import "./TodoListApp.css";
 import { useState, useEffect } from "react";
 import { TodoFilter } from "./TodoFilter";
-import type { TodosType } from "../typedefs";
+import type { TodosType } from "../../typedefs";
 import { TodoList } from "./TodoList";
-import { Loader } from "./Loader";
+import { Loader } from "../shared/Loader";
 import { TodoInput } from "./TodoInput";
 
 const initialTodos: TodosType = [];

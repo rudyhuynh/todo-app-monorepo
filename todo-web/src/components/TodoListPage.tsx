@@ -1,81 +1,85 @@
-import { useState, useReducer } from "react";
-import { TodoFilter } from "./TodoFilter";
-import type { ActionType, TodosType } from "../typedefs";
-import { TodoList } from "./TodoList";
-
 import "./TodoListApp.css";
-
-let i = 0;
-
-console.log("app start");
+import { useState, useEffect } from "react";
+import { TodoFilter } from "./TodoFilter";
+import type { TodosType } from "../typedefs";
+import { TodoList } from "./TodoList";
+import { Loader } from "./Loader";
+import { TodoInput } from "./TodoInput";
 
 const initialTodos: TodosType = [];
-function todosReducer(todos: TodosType, action: ActionType) {
-  switch (action.type) {
-    case "add_todo":
-      return [
-        ...todos,
-        {
-          id: action.id,
-          content: action.content,
-          isDone: false,
-        },
-      ];
-    case "set_done_undone":
-      return todos.map((todo) => ({
-        ...todo,
-        isDone: todo.id === action.id ? !todo.isDone : todo.isDone,
-      }));
-    case "delete_todo":
-      return todos.filter((todo) => todo.id !== action.id);
-  }
-  return todos;
-}
 
 export const TodoListPage = () => {
-  const [todos, dispatch] = useReducer(todosReducer, initialTodos);
   const [filter, setFilter] = useState("all");
 
-  const onClickAdd = () => {
-    const id = Math.random();
-    const content = "New Todo " + i++;
-    dispatch({ type: "add_todo", id, content });
-  };
+  const [todos, setTodos] = useState(initialTodos);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    let ignore = false;
+    async function fetchTodos() {
+      setIsLoading(true);
+      try {
+        const response = await fetch(
+          "http://localhost:3001/api/todos?filter=" + filter
+        );
+        const todos = await response.json();
+        if (!ignore) setTodos(todos as TodosType);
+        setErrorMessage("");
+      } catch (e) {
+        if (e instanceof Error) setErrorMessage(e.message);
+        console.error(e);
+      }
+
+      setIsLoading(false);
+    }
+
+    fetchTodos();
+    return () => {
+      ignore = true;
+    };
+  }, [filter]);
 
   const onClickDoneUndone = (id: number) => {
-    dispatch({ type: "set_done_undone", id });
+    //
   };
 
   const onClickDelete = (id: number) => {
-    dispatch({ type: "delete_todo", id });
+    //
   };
 
   const onClickFilter = (filter: string) => {
     setFilter(filter);
   };
 
-  const filteredTodo = todos.filter((todo) => {
-    if (filter === "all") return true;
-    if (filter === "done") return todo.isDone;
-    if (filter === "undone") return !todo.isDone;
-  });
+  const onCreateTodo = (content: string) => {
+    //
+  };
 
   return (
-    <div className="todo-list-app">
-      <div className="toolbox">
-        <TodoFilter filter={filter} onClickFilter={onClickFilter} />
-      </div>
+    <>
+      <Loader loading={isLoading} />
+      <div className="todo-list-app">
+        <div className="toolbox">
+          <TodoFilter filter={filter} onClickFilter={onClickFilter} />
+        </div>
 
-      <TodoList
-        todos={filteredTodo}
-        onClickDoneUndone={onClickDoneUndone}
-        onClickDelete={onClickDelete}
-      />
-      <div className="todo-add">
-        <button className="btn full-width" onClick={onClickAdd}>
-          Add
-        </button>
+        <div className="card-panel todo-card-panel">
+          {errorMessage ? (
+            <div className="todo-list-error">
+              <span className="red-text ">{errorMessage}</span>
+            </div>
+          ) : null}
+          {!errorMessage ? (
+            <TodoList
+              todos={todos}
+              onClickDoneUndone={onClickDoneUndone}
+              onClickDelete={onClickDelete}
+            />
+          ) : null}
+        </div>
+        <TodoInput onCreate={onCreateTodo} />
       </div>
-    </div>
+    </>
   );
 };

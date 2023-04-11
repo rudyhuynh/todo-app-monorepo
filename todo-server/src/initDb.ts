@@ -1,18 +1,10 @@
 import * as Todo from "./model/Todo";
-
-function hourMs(hour: number) {
-  return hour * 60 * 60 * 1000;
-}
-
-function dayMs(day: number) {
-  return day * 24 * 60 * 60 * 1000;
-}
+import { hourMs, dayMs } from "./utils/timeUtils";
 
 const todos = [
   { content: "Learn React Query", doneAt: new Date(Date.now() - hourMs(2)) },
   {
     content: "Create useFetch hook",
-    doneAt: new Date(Date.now() - hourMs(3.5)),
   },
   {
     content: "Learn Learn Javascript",
@@ -28,7 +20,6 @@ const todos = [
   },
   {
     content: "Update NodeJS",
-    doneAt: new Date(Date.now() - dayMs(1) - hourMs(3)),
   },
   {
     content: "Fix HTML #2 Issue",

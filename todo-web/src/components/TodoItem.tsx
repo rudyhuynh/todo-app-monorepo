@@ -9,19 +9,18 @@ type TodoItemPropsType = {
 export const TodoItem = (props: TodoItemPropsType) => {
   const { todo, onClickDoneUndone, onClickDelete } = props;
   return (
-    <li className="collection-item text-center" key={todo.id}>
+    <li className="collection-item text-center todo-item" key={todo.id}>
       <div
         style={{
-          display: "inline-block",
-          paddingRight: 20,
-          ...(todo.isDone && { textDecoration: "line-through" }),
+          ...(todo.doneAt && { textDecoration: "line-through" }),
         }}
       >
-        {todo.content}{" "}
+        {todo.content}
       </div>
       <button className="btn-small" onClick={() => onClickDoneUndone(todo.id)}>
-        {todo.isDone ? "Undone" : "Done"}
-      </button>{" "}
+        {todo.doneAt ? "Undone" : "Done"}
+      </button>
+      &nbsp;
       <button className="btn-small" onClick={() => onClickDelete(todo.id)}>
         <i className="material-icons">delete</i>
       </button>

@@ -1,6 +1,7 @@
 import { DataTypes, Model, Op } from "sequelize";
 import { sequelize } from "../db";
 import { TodoFilter } from "../typedefs";
+import { dayMs } from "../utils/timeUtils";
 
 class Todo extends Model {
   declare id: number;
@@ -29,7 +30,23 @@ Todo.init(
   }
 );
 
-export async function getTodos(filter: TodoFilter): Promise<Todo[]> {
+export async function getTodosByDoneTimeRange(
+  from: Date,
+  to: Date
+): Promise<Todo[]> {
+  console.log("from", from);
+  console.log("\t to", to);
+  return await Todo.findAll({
+    order: [["doneAt", "ASC"]],
+    where: {
+      doneAt: {
+        [Op.and]: [{ [Op.gte]: from }, { [Op.lt]: to }],
+      },
+    },
+  });
+}
+
+export async function getTodosByFilter(filter: TodoFilter): Promise<Todo[]> {
   if (filter === "all") {
     return await Todo.findAll({ order: [["createdAt", "ASC"]] });
   } else if (filter === "done") {

@@ -1,0 +1,22 @@
+.analytics-page {
+  width: 100vw;
+  height: calc(100vh - 64px);
+  border: 1px dashed red;
+}
+
+select {
+  display: unset;
+}
+
+.analytics-option-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  padding-left: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.analytics-option-wrapper .label {
+  margin-right: 10px;
+}

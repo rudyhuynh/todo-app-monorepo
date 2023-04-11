@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "highcharts": "^10.3.3",
+    "materialize-css": "^1.0.0-rc.2",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "materialize-css": "^1.0.0-rc.2"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.0.28",

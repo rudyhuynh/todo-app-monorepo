@@ -3,12 +3,19 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import { testConnection } from "./db";
 import * as Todo from "./model/Todo";
-import { CreateTodoDTO, TodoFilter, UpdateTodoDTO } from "./typedefs";
+import {
+  CreateTodoDTO,
+  TodoFilter,
+  TodoQuery,
+  UpdateTodoDTO,
+} from "./typedefs";
 import { initDb } from "./initDb";
+import { getLastWeekRange, getYesterdayRange } from "./utils/timeUtils";
 
 const app: Application = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 
 const port: number = 3001;
 
@@ -27,14 +34,30 @@ async function main() {
 
   app.get("/api/todos", async (req: Request, res: Response) => {
     try {
-      let filter = req.query.filter;
+      let { filter, done_time_range } = req.query as TodoQuery;
 
-      if (!["all", "done", "undone"].includes(filter as string)) {
-        filter = "all";
+      if (filter) {
+        if (!["all", "done", "undone"].includes(filter)) {
+          filter = "all";
+        }
+        const todos = await Todo.getTodosByFilter(filter as TodoFilter);
+        res.json(todos);
+      } else if (done_time_range === "yesterday") {
+        const [from, to] = getYesterdayRange();
+        const todos = await Todo.getTodosByDoneTimeRange(from, to);
+        res.json(todos);
+      } else if (done_time_range === "last_week") {
+        const [from, to] = getLastWeekRange();
+        const todos = await Todo.getTodosByDoneTimeRange(from, to);
+        res.json(todos);
+      } else {
+        const todos = await Todo.getTodosByFilter("all");
+        res.json(todos);
       }
 
-      const todos = await Todo.getTodos(filter as TodoFilter);
-      res.json(todos);
+      if (!["all", "done", "undone"].includes(filter)) {
+        filter = "all";
+      }
     } catch (e) {
       console.error(e);
       res.status(500).json({ error: (e as any).message });

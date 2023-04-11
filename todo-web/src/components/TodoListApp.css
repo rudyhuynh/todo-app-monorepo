@@ -4,12 +4,11 @@ h1 {
 
 .todo-list-app {
   width: 100vw;
-  height: 100vh;
-  padding-top: 20px;
+  height: calc(100vh - 64px);
 }
 .toolbox,
-.todo-list,
-.todo-add {
+.todo-add,
+.todo-card-panel {
   width: 60vw;
 }
 
@@ -17,10 +16,22 @@ h1 {
   margin: 0 auto;
   text-align: center;
 }
-.todo-list {
+
+.todo-card-panel {
   height: 50vh;
   margin: 10px auto !important;
+  padding: 0 !important;
+}
+
+.todo-list {
+  height: 100%;
   overflow: scroll !important;
+}
+.todo-list-error {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .todo-add {
@@ -29,6 +40,7 @@ h1 {
 
 .toolbox {
   position: relative;
+  margin-top: 10px;
 }
 
 .dark-theme-btn {
@@ -39,4 +51,12 @@ h1 {
 
 .text-center {
   text-align: center;
+}
+
+.todo-item {
+  display: flex;
+}
+.todo-item > div {
+  flex: 1;
+  text-align: left;
 }

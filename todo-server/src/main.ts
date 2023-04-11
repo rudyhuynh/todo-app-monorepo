@@ -8,7 +8,6 @@ import { initDb } from "./initDb";
 
 const app: Application = express();
 
-app.use(cors);
 app.use(bodyParser.json());
 
 const port: number = 3001;
@@ -48,26 +47,26 @@ async function main() {
     res.json(todos);
   });
 
-  app.post("/api/todos", async (req: Request, res: Response) => {
-    const todo = req.body as CreateTodoDTO;
-    const createdTodo = await Todo.addTodo(todo.content);
-    res.json(createdTodo);
-  });
+  // app.post("/api/todos", async (req: Request, res: Response) => {
+  //   const todo = req.body as CreateTodoDTO;
+  //   const createdTodo = await Todo.addTodo(todo.content);
+  //   res.json(createdTodo);
+  // });
 
-  app.put("/api/todos", async (req: Request, res: Response) => {
-    const todo = req.body as UpdateTodoDTO;
-    // only allow set done / undone for now
-    if (todo.done) {
-      await Todo.setDone(todo.id);
-    } else {
-      await Todo.setUndone(todo.id);
-    }
-  });
+  // app.put("/api/todos", async (req: Request, res: Response) => {
+  //   const todo = req.body as UpdateTodoDTO;
+  //   // only allow set done / undone for now
+  //   if (todo.done) {
+  //     await Todo.setDone(todo.id);
+  //   } else {
+  //     await Todo.setUndone(todo.id);
+  //   }
+  // });
 
-  app.delete("/api/todos/:id", async (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    await Todo.destroy(id);
-  });
+  // app.delete("/api/todos/:id", async (req: Request, res: Response) => {
+  //   const id = parseInt(req.params.id);
+  //   await Todo.destroy(id);
+  // });
 
   app.listen(port, function () {
     console.log(`Server started at http://localhost:${port} !`);

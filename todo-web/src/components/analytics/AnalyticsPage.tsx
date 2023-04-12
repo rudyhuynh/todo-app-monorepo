@@ -20,10 +20,11 @@ const timeRangeOptions: TimeRangeOption[] = [
 ];
 
 export const AnalyticsPage = () => {
+  const [timeRange, setTimeRange] = useState("yesterday");
+
   const [todos, setTodos] = useState<TodosType>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [timeRange, setTimeRange] = useState("yesterday");
 
   useEffect(() => {
     let ignore = false;
@@ -63,6 +64,7 @@ export const AnalyticsPage = () => {
           <select
             value={timeRange}
             onChange={(e) => onChangeTimeRange(e.target.value)}
+            disabled={isLoading}
           >
             {timeRangeOptions.map(({ value, label }) => {
               return (
@@ -75,7 +77,10 @@ export const AnalyticsPage = () => {
         </div>
       </div>
       <div className="analytics-chart-wrapper">
-        <TodoChart todos={todos} doneTimeRange={timeRange} />
+        {!errorMessage ? (
+          <TodoChart todos={todos} doneTimeRange={timeRange} />
+        ) : null}
+        {errorMessage ? <span className="red-text">errorMessage</span> : null}
       </div>
     </div>
   );

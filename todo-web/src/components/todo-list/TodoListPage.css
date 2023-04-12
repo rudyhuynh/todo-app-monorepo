@@ -4,7 +4,8 @@ h1 {
 
 .todo-list-app {
   width: 100vw;
-  height: calc(100vh - 64px);
+  height: calc(100vh - 74px);
+  overflow: hidden;
 }
 .toolbox,
 .todo-add,
@@ -59,4 +60,9 @@ h1 {
 .todo-item > div {
   flex: 1;
   text-align: left;
+}
+
+.done-at {
+  font-size: 12px;
+  color: grey;
 }

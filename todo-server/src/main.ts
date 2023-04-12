@@ -70,21 +70,33 @@ async function main() {
     res.json(todos);
   });
 
-  // app.post("/api/todos", async (req: Request, res: Response) => {
-  //   const todo = req.body as CreateTodoDTO;
-  //   const createdTodo = await Todo.addTodo(todo.content);
-  //   res.json(createdTodo);
-  // });
+  /**
+   * Add a new todo
+   */
+  app.post("/api/todos", async (req: Request, res: Response) => {
+    const todo = req.body as CreateTodoDTO;
+    const createdTodo = await Todo.addTodo(todo.content);
+    res.json(createdTodo);
+  });
 
-  // app.put("/api/todos", async (req: Request, res: Response) => {
-  //   const todo = req.body as UpdateTodoDTO;
-  //   // only allow set done / undone for now
-  //   if (todo.done) {
-  //     await Todo.setDone(todo.id);
-  //   } else {
-  //     await Todo.setUndone(todo.id);
-  //   }
-  // });
+  /**
+   * Update a todo.
+   * Only allow set done/undone for now
+   */
+  app.put("/api/todos", async (req: Request, res: Response) => {
+    try {
+      const todo = req.body as UpdateTodoDTO;
+      console.log("req body", req.body);
+
+      const { id, done } = todo;
+      let doneAt = done ? new Date() : null;
+      await Todo.setDoneAt(id, doneAt);
+      res.json({ id, doneAt });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: "Fail to update todo" });
+    }
+  });
 
   // app.delete("/api/todos/:id", async (req: Request, res: Response) => {
   //   const id = parseInt(req.params.id);

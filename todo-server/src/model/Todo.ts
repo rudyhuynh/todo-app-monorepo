@@ -84,20 +84,10 @@ export async function addTodo(content: string, doneAt?: Date) {
   return todo.toJSON();
 }
 
-export async function setDone(todoId: number) {
+export async function setDoneAt(todoId: number, doneAt: Date | null) {
   const todo = await getTodoById(todoId);
   if (todo) {
-    todo.doneAt = new Date();
-    await todo.save();
-  } else {
-    throw new Error(`Todo not found. id=${todoId}`);
-  }
-}
-
-export async function setUndone(todoId: number) {
-  const todo = await getTodoById(todoId);
-  if (todo) {
-    todo.doneAt = null;
+    todo.doneAt = doneAt;
     await todo.save();
   } else {
     throw new Error(`Todo not found. id=${todoId}`);

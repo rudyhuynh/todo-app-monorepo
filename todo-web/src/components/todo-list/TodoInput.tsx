@@ -2,9 +2,10 @@ import { useState } from "react";
 
 type TodoInputPropsType = {
   onCreate: (content: string) => void;
+  disabled: boolean;
 };
 
-export const TodoInput = ({ onCreate }: TodoInputPropsType) => {
+export const TodoInput = ({ onCreate, disabled }: TodoInputPropsType) => {
   const [content, setContent] = useState("");
 
   return (
@@ -20,6 +21,7 @@ export const TodoInput = ({ onCreate }: TodoInputPropsType) => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="Type to add new todo"
+        disabled={disabled}
       />
     </form>
   );

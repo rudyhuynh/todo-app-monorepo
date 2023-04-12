@@ -1,14 +1,6 @@
 import moment from "moment";
 import { unitOfTime } from "moment";
 
-export function hourMs(hour: number) {
-  return hour * 60 * 60 * 1000;
-}
-
-export function dayMs(day: number) {
-  return day * 24 * 60 * 60 * 1000;
-}
-
 export function getYesterdayRange() {
   const thisTime = moment();
   const from = moment(thisTime).subtract(1, "day").startOf("day");
@@ -42,8 +34,8 @@ function countTodosPerInterval(todos: any[], intervalString: string) {
 }
 
 const mapIntervalStringToMs: { [key: string]: number } = {
-  day: dayMs(1),
-  hour: hourMs(1),
+  day: 24 * 60 * 60 * 1000,
+  hour: 60 * 60 * 1000,
 };
 
 export function generateTodoChartData(

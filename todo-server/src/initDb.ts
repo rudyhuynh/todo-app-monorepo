@@ -1,73 +1,91 @@
 import * as Todo from "./model/Todo";
-import { hourMs, dayMs } from "./utils/timeUtils";
+import moment from "moment";
+
+const startOfYesterday = moment().subtract(1, "day").startOf("day");
+const startOfLastWeek = moment().subtract(7, "day").startOf("week");
 
 const todos = [
-  { content: "Learn React Query", doneAt: new Date(Date.now() - hourMs(2)) },
+  {
+    content: "Revert branch 'todo-experiment'",
+    doneAt: moment(startOfYesterday).add(9, "hour").toDate(),
+  },
+  {
+    content: "Learn React Query",
+    doneAt: moment(startOfYesterday).add(11, "hour").toDate(),
+  },
   {
     content: "Create useFetch hook",
   },
   {
-    content: "Learn Learn Javascript",
-    doneAt: new Date(Date.now() - hourMs(3)),
+    content: "Setup monorepo",
+    doneAt: moment(startOfYesterday).add(11, "hour").toDate(),
+  },
+  {
+    content: "Migrate to Jest",
+    doneAt: moment(startOfYesterday).add(12, "hour").toDate(),
+  },
+  {
+    content: "Fix BUG-19373",
+    doneAt: moment(startOfYesterday).add(13, "hour").toDate(),
   },
   {
     content: "Remove useRef of Counter Component",
-    doneAt: new Date(Date.now() - hourMs(4)),
+    doneAt: moment(startOfYesterday).add(15, "hour").toDate(),
   },
   {
     content: "useEffect",
-    doneAt: new Date(Date.now() - dayMs(1) - hourMs(4.5)),
+    doneAt: moment(startOfLastWeek).add(1, "day").toDate(),
   },
   {
     content: "Update NodeJS",
   },
   {
     content: "Fix HTML #2 Issue",
-    doneAt: new Date(Date.now() - dayMs(1) - hourMs(3)),
+    doneAt: moment(startOfLastWeek).add(3, "day").toDate(),
   },
   {
     content: "Fix Flexbox #1 Issue",
-    doneAt: new Date(Date.now() - dayMs(2) - hourMs(1)),
+    doneAt: moment(startOfLastWeek).add(3, "day").toDate(),
   },
   {
     content: "useImperativeHandle",
-    doneAt: new Date(Date.now() - dayMs(3) - hourMs(3)),
+    doneAt: moment(startOfLastWeek).add(3, "day").toDate(),
   },
   {
     content: "Upgrade Material CSS",
-    doneAt: new Date(Date.now() - dayMs(3) - hourMs(6)),
+    doneAt: moment(startOfLastWeek).add(4, "day").toDate(),
   },
   {
     content: "Replace useState by useReducer",
-    doneAt: new Date(Date.now() - dayMs(3) - hourMs(7)),
+    doneAt: moment(startOfLastWeek).add(4, "day").toDate(),
   },
   {
     content: "useUrlSearchParams",
-    doneAt: new Date(Date.now() - dayMs(3) - hourMs(7.5)),
+    doneAt: moment(startOfLastWeek).add(4, "day").toDate(),
   },
   {
     content: "Integrate React Table",
-    doneAt: new Date(Date.now() - dayMs(4) - hourMs(3)),
+    doneAt: moment(startOfLastWeek).add(4, "day").toDate(),
   },
   {
     content: "Checkout Zustand",
-    doneAt: new Date(Date.now() - dayMs(4) - hourMs(4)),
+    doneAt: moment(startOfLastWeek).add(5, "day").toDate(),
   },
   {
     content: "Update Redux Actions",
-    doneAt: new Date(Date.now() - dayMs(5) - hourMs(9)),
+    doneAt: moment(startOfLastWeek).add(5, "day").toDate(),
   },
   {
     content: "Setup Database",
-    doneAt: new Date(Date.now() - dayMs(6) - hourMs(3)),
+    doneAt: moment(startOfLastWeek).add(5, "day").toDate(),
   },
   {
     content: "Refactor TodoApp",
-    doneAt: new Date(Date.now() - dayMs(7) - hourMs(3)),
+    doneAt: moment(startOfLastWeek).add(6, "day").toDate(),
   },
   {
     content: "Write Unit Test",
-    doneAt: new Date(Date.now() - dayMs(8) - hourMs(3)),
+    doneAt: moment(startOfLastWeek).add(5, "day").toDate(),
   },
 ];
 

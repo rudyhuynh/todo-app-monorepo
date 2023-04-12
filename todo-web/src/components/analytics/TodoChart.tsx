@@ -2,11 +2,9 @@ import { useRef, useEffect } from "react";
 import { TodosType } from "../../typedefs";
 import HighCharts, { Options } from "highcharts";
 import {
-  dayMs,
   generateTodoChartData,
   getLastWeekRange,
   getYesterdayRange,
-  hourMs,
 } from "../../utils/generateTodoChartData";
 
 const mapTimeRangeToGran = {
@@ -95,8 +93,10 @@ type TodoChartPropsType = {
 };
 export const TodoChart = ({ todos, doneTimeRange }: TodoChartPropsType) => {
   const chartRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     generateChart(chartRef.current!, todos, doneTimeRange);
   }, [todos, doneTimeRange]);
+
   return <div ref={chartRef}></div>;
 };

@@ -1,7 +1,5 @@
 import "./NavigationBar.css";
-import { useEffect, useState } from "react";
-import { Route, Routes } from "../typedefs";
-import { SideNav } from "./SideNav";
+import { Route, Routes } from "../../typedefs";
 
 type PropTypes = {
   routes: Routes;
@@ -10,20 +8,6 @@ type PropTypes = {
 
 export const NavigationBar = ({ routes, currentRoute }: PropTypes) => {
   const pathname = window.location.pathname;
-
-  // const [showSideNav, setShowSideNav] = useState(false);
-
-  useEffect(() => {
-    // var elems = document.querySelectorAll(".sidenav");
-    // var instances = M.Sidenav.init(elems);
-    // console.log("instances", instances);
-    // // window.$(".button-collapse").sideNav({
-    // //   menuWidth: 500, // Default is 300
-    // //   edge: "left", // Choose the horizontal origin
-    // //   closeOnClick: false, // Closes side-nav on <a> clicks, useful for Angular/Meteor
-    // //   draggable: true, // Choose whether you can drag to open on touch screens
-    // // });
-  }, []);
 
   return (
     <>
@@ -46,7 +30,6 @@ export const NavigationBar = ({ routes, currentRoute }: PropTypes) => {
           </ul>
         </div>
       </nav>
-      {/* {showSideNav && <SideNav onClose={() => setShowSideNav(false)} />} */}
     </>
   );
 };

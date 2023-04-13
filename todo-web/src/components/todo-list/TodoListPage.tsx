@@ -81,7 +81,7 @@ export const TodoListPage = () => {
       const { id, doneAt } = await response.json();
       dispatch({ type: "set_doneAt", id, doneAt: doneAt });
     } else {
-      setErrorMessage("Fail to update todo. Please refresh the page.");
+      alert("Fail to update todo. Please refresh the page.");
     }
   };
 

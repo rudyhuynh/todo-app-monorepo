@@ -16,7 +16,8 @@ export const TodoItem = (props: TodoItemPropsType) => {
     if (doneAt.isValid()) {
       return (
         <span className="done-at">
-          Done at {doneAt.format("YYYY-MM-DD HH:mm")}
+          <span className="hide-on-med-and-down">Done at </span>
+          {doneAt.format("YYYY-MM-DD HH:mm")}
         </span>
       );
     }

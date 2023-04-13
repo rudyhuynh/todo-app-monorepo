@@ -5,3 +5,9 @@
   position: fixed;
   top: 52px;
 }
+
+@media only screen and (min-width: 601px) {
+  .progress {
+    top: 61px;
+  }
+}

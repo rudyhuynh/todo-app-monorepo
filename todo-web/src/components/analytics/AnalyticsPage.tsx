@@ -2,6 +2,7 @@ import "./AnalyticsPage.css";
 import { useEffect, useState } from "react";
 import { TodosType } from "../../typedefs";
 import { TodoChart } from "./TodoChart";
+import { Loader } from "../shared/Loader";
 
 type TimeRangeOption = {
   value: string;
@@ -57,31 +58,36 @@ export const AnalyticsPage = () => {
   };
 
   return (
-    <div className="analytics-page row">
-      <div className="analytics-option-wrapper">
-        <div className="label">Show done todos of</div>
-        <div>
-          <select
-            value={timeRange}
-            onChange={(e) => onChangeTimeRange(e.target.value)}
-            disabled={isLoading}
-          >
-            {timeRangeOptions.map(({ value, label }) => {
-              return (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              );
-            })}
-          </select>
+    <>
+      <Loader loading={isLoading} />
+      <div className="analytics-page row">
+        <div className="analytics-option-wrapper">
+          <div className="label">Show done todos of</div>
+          <div>
+            <select
+              value={timeRange}
+              onChange={(e) => onChangeTimeRange(e.target.value)}
+              disabled={isLoading}
+            >
+              {timeRangeOptions.map(({ value, label }) => {
+                return (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        </div>
+        <div className="analytics-chart-wrapper">
+          {!errorMessage ? (
+            <TodoChart todos={todos} doneTimeRange={timeRange} />
+          ) : null}
+          {errorMessage ? (
+            <span className="red-text">{errorMessage}</span>
+          ) : null}
         </div>
       </div>
-      <div className="analytics-chart-wrapper">
-        {!errorMessage ? (
-          <TodoChart todos={todos} doneTimeRange={timeRange} />
-        ) : null}
-        {errorMessage ? <span className="red-text">errorMessage</span> : null}
-      </div>
-    </div>
+    </>
   );
 };

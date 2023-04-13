@@ -7,11 +7,6 @@ import {
   getYesterdayRange,
 } from "../../utils/generateTodoChartData";
 
-const mapTimeRangeToGran = {
-  yesterday: "hour",
-  last_week: "day",
-};
-
 const timezoneOffset = new Date().getTimezoneOffset();
 
 function generateChart(

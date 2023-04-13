@@ -1,5 +1,5 @@
 import "./AnalyticsPage.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TodosType } from "../../typedefs";
 import { TodoChart } from "./TodoChart";
 import { Loader } from "../shared/Loader";

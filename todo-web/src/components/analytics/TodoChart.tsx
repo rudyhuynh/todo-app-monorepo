@@ -5,6 +5,7 @@ import {
   generateTodoChartData,
   getLastWeekRange,
   getYesterdayRange,
+  IntervalString,
 } from "../../utils/generateTodoChartData";
 
 const timezoneOffset = new Date().getTimezoneOffset();
@@ -14,7 +15,7 @@ function generateChart(
   todos: any[],
   doneTimeRange: string
 ) {
-  let begin, end, intervalString;
+  let begin, end, intervalString: IntervalString;
   if (doneTimeRange === "yesterday") {
     [begin, end] = getYesterdayRange();
     intervalString = "hour";

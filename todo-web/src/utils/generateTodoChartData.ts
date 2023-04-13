@@ -1,6 +1,8 @@
 import moment from "moment";
 import { unitOfTime } from "moment";
 
+export type IntervalString = "hour" | "day";
+
 export function getYesterdayRange() {
   const thisTime = moment();
   const from = moment(thisTime).subtract(1, "day").startOf("day");
@@ -15,12 +17,10 @@ export function getLastWeekRange() {
   return [from.toDate(), to.toDate()];
 }
 
-function countTodosPerInterval(todos: any[], intervalString: string) {
+function countTodosPerInterval(todos: any[], intervalString: IntervalString) {
   return todos
     .map((todo) => {
-      const perInterval = moment(todo.doneAt)
-        .startOf(intervalString as unitOfTime.StartOf)
-        .valueOf();
+      const perInterval = moment(todo.doneAt).startOf(intervalString).valueOf();
       return [perInterval, todo];
     })
     .reduce<{ [key: string]: number }>((results, item) => {
@@ -42,7 +42,7 @@ export function generateTodoChartData(
   todos: any[],
   begin: Date,
   end: Date,
-  intervalString: string
+  intervalString: IntervalString
 ) {
   if (!todos || !todos.length) return [];
   let results = [];

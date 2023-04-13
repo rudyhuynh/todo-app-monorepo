@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { TodosType } from "../../typedefs";
 import { TodoChart } from "./TodoChart";
 import { Loader } from "../shared/Loader";
+import { useFetch } from "../../hooks/useFetch";
 
 type TimeRangeOption = {
   value: string;
@@ -22,36 +23,13 @@ const timeRangeOptions: TimeRangeOption[] = [
 
 export const AnalyticsPage = () => {
   const [timeRange, setTimeRange] = useState("yesterday");
-
   const [todos, setTodos] = useState<TodosType>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    let ignore = false;
-    async function fetchTodos() {
-      setIsLoading(true);
-      try {
-        const response = await fetch(
-          "http://localhost:3001/api/todos?done_time_range=" + timeRange
-        );
-        const todos = await response.json();
-        if (!ignore) {
-          setTodos(todos as TodosType);
-        }
-        setErrorMessage("");
-      } catch (e) {
-        if (e instanceof Error) setErrorMessage(e.message);
-        console.error(e);
-      }
-      setIsLoading(false);
-    }
-
-    fetchTodos();
-    return () => {
-      ignore = true;
-    };
-  }, [timeRange]);
+  const { isLoading, errorMessage } = useFetch(
+    "/api/todos?done_time_range=" + timeRange,
+    setTodos,
+    true
+  );
 
   const onChangeTimeRange = (value: string) => {
     setTimeRange(value);

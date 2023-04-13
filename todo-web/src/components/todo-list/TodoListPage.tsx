@@ -1,10 +1,11 @@
 import "./TodoListPage.css";
-import { useState, useEffect, useReducer } from "react";
+import { useState, useReducer } from "react";
 import { TodoFilter } from "./TodoFilter";
 import type { ActionType, TodoType, TodosType } from "../../typedefs";
 import { TodoList } from "./TodoList";
 import { Loader } from "../shared/Loader";
 import { TodoInput } from "./TodoInput";
+import { useFetch } from "../../hooks/useFetch";
 
 const initialTodos: TodosType = [];
 function todosReducer(todos: TodosType, action: ActionType): TodosType {
@@ -37,33 +38,11 @@ export const TodoListPage = () => {
   const [filter, setFilter] = useState("all");
 
   const [todos, dispatch] = useReducer(todosReducer, initialTodos);
-  const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    let ignore = false;
-    async function fetchTodos() {
-      setIsLoading(true);
-      try {
-        const response = await fetch(
-          "http://localhost:3001/api/todos?filter=" + filter
-        );
-        const todos = await response.json();
-        if (!ignore) dispatch({ type: "set_todos", todos });
-        setErrorMessage("");
-      } catch (e) {
-        if (e instanceof Error) setErrorMessage(e.message);
-        console.error(e);
-      }
-
-      setIsLoading(false);
-    }
-
-    fetchTodos();
-    return () => {
-      ignore = true;
-    };
-  }, [filter]);
+  const { isLoading, errorMessage } = useFetch(
+    "/api/todos?filter=" + filter,
+    (todos) => dispatch({ type: "set_todos", todos })
+  );
 
   const onClickDoneUndone = async (id: number, todo: TodoType) => {
     const nextDone = todo.doneAt ? false : true;

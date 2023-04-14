@@ -6,6 +6,22 @@ const startOfLastWeek = moment().subtract(7, "day").startOf("week");
 
 const todos = [
   {
+    /**
+     * Created a todo done today, just in case user run
+     * the server over midnight
+     */
+    content: "Setup eslint react",
+    doneAt: moment().startOf("day").add(8, "hour").toDate(),
+  },
+  {
+    /**
+     * Created a todo done this week, just in case user run
+     * the server over midnight that is end of a week.
+     */
+    content: "Learn exhaustive deps eslint rule",
+    doneAt: moment().startOf("week").add(8, "hour").toDate(),
+  },
+  {
     content: "Revert branch 'todo-experiment'",
     doneAt: moment(startOfYesterday).add(9, "hour").toDate(),
   },

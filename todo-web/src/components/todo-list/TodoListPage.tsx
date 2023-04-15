@@ -6,6 +6,7 @@ import { TodoList } from "./TodoList";
 import { Loader } from "../shared/Loader";
 import { TodoInput } from "./TodoInput";
 import { useFetch } from "../../hooks/useFetch";
+import { useUrlSearchParam } from "../../hooks/useUrlSearchParam";
 
 const initialTodos: TodosType = [];
 function todosReducer(todos: TodosType, action: ActionType): TodosType {
@@ -35,7 +36,9 @@ function todosReducer(todos: TodosType, action: ActionType): TodosType {
 }
 
 export const TodoListPage = () => {
-  const [filter, setFilter] = useState("all");
+  // const [filter, setFilter] = useState("all");
+
+  const [filter, setFilter] = useUrlSearchParam("filter", "all");
 
   const [todos, dispatch] = useReducer(todosReducer, initialTodos);
 

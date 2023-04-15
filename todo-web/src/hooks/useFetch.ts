@@ -4,7 +4,9 @@ const ENDPOINT = "http://localhost:3001";
 
 export function useFetch(
   url: string,
-  // setState, dispatch(...)
+  /**
+   * setState, dispatch(...)
+   */
   setResponseToState: (data: any) => void,
   cache = false
 ) {

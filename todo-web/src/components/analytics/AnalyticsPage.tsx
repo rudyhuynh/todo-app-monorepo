@@ -4,6 +4,7 @@ import { TodosType } from "../../typedefs";
 import { TodoChart } from "./TodoChart";
 import { Loader } from "../shared/Loader";
 import { useFetch } from "../../hooks/useFetch";
+import { useUrlSearchParam } from "../../hooks/useUrlSearchParam";
 
 type TimeRangeOption = {
   value: string;
@@ -22,7 +23,10 @@ const timeRangeOptions: TimeRangeOption[] = [
 ];
 
 export const AnalyticsPage = () => {
-  const [timeRange, setTimeRange] = useState("yesterday");
+  const [timeRange, setTimeRange] = useUrlSearchParam(
+    "time_range",
+    "yesterday"
+  );
   const [todos, setTodos] = useState<TodosType>([]);
 
   const { isLoading, errorMessage } = useFetch(

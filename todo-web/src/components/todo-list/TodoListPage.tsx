@@ -1,10 +1,11 @@
 import "./TodoListPage.css";
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect, useReducer, useRef } from "react";
 import { TodoFilter } from "./TodoFilter";
 import type { ActionType, TodoType, TodosType } from "../../typedefs";
-import { TodoList } from "./TodoList";
+import { TodoList, TodoListForwardedRefObject } from "./TodoList";
 import { Loader } from "../shared/Loader";
-import { TodoInput } from "./TodoInput";
+import { TodoForm } from "./TodoForm";
+import { fetch } from "../../utils/fetch";
 
 const initialTodos: TodosType = [];
 function todosReducer(todos: TodosType, action: ActionType): TodosType {
@@ -17,7 +18,7 @@ function todosReducer(todos: TodosType, action: ActionType): TodosType {
         {
           id: action.id,
           content: action.content,
-          doneAt: null,
+          due: action.due,
         },
       ];
     case "set_doneAt": {
@@ -35,6 +36,7 @@ function todosReducer(todos: TodosType, action: ActionType): TodosType {
 
 export const TodoListPage = () => {
   const [filter, setFilter] = useState("all");
+  const [shouldShowAddTodo, setShouldShowAddTodo] = useState(false);
 
   const [todos, dispatch] = useReducer(todosReducer, initialTodos);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,10 +47,7 @@ export const TodoListPage = () => {
     async function fetchTodos() {
       setIsLoading(true);
       try {
-        const response = await fetch(
-          "http://localhost:3001/api/todos?filter=" + filter
-        );
-        const todos = await response.json();
+        const todos = await fetch("/api/todos?filter=" + filter);
         if (!ignore) dispatch({ type: "set_todos", todos });
         setErrorMessage("");
       } catch (e) {
@@ -93,9 +92,26 @@ export const TodoListPage = () => {
     setFilter(filter);
   };
 
-  const onCreateTodo = (content: string) => {
-    //
+  const onClickAddTodo = () => {
+    setShouldShowAddTodo(true);
   };
+
+  const shouldScrollToBottomRef = useRef(false);
+  const onCloseTodoForm = (addTodoSuccess: boolean) => {
+    if (addTodoSuccess) {
+      shouldScrollToBottomRef.current = true;
+    }
+
+    setShouldShowAddTodo(false);
+  };
+
+  const todoListRef = useRef<TodoListForwardedRefObject>(null);
+  useEffect(() => {
+    if (shouldScrollToBottomRef.current) {
+      todoListRef.current!.scrollToBottom();
+      shouldScrollToBottomRef.current = false;
+    }
+  });
 
   return (
     <>
@@ -113,6 +129,7 @@ export const TodoListPage = () => {
           ) : null}
           {!errorMessage ? (
             <TodoList
+              ref={todoListRef}
               todos={todos}
               onClickDoneUndone={onClickDoneUndone}
               onClickDelete={onClickDelete}
@@ -120,7 +137,12 @@ export const TodoListPage = () => {
             />
           ) : null}
         </div>
-        <TodoInput onCreate={onCreateTodo} disabled={isLoading} />
+        <button className="btn btn-add-todo" onClick={onClickAddTodo}>
+          Add Todo
+        </button>
+        {shouldShowAddTodo && (
+          <TodoForm dispatch={dispatch} onClose={onCloseTodoForm} />
+        )}
       </div>
     </>
   );

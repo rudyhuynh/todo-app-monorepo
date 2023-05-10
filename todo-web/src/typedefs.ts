@@ -7,5 +7,15 @@ export type Route = {
 export type Routes = Route[];
 
 export type ActionType = { type: string; [any: string]: any };
-export type TodoType = { id: number; content: string; doneAt: Date | null };
+export type TodoType = {
+  id: number;
+  content: string;
+  due?: Date;
+  doneAt?: Date;
+};
 export type TodosType = TodoType[];
+
+// export type NewTodo = {
+//   content: string;
+//   due?: Date;
+// };

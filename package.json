@@ -12,5 +12,8 @@
   "workspaces": [
     "todo-server",
     "todo-web"
-  ]
+  ],
+  "dependencies": {
+    "react-hook-form": "^7.43.9"
+  }
 }

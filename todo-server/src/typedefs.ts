@@ -2,6 +2,7 @@ export type TodoFilter = "all" | "done" | "undone";
 
 export type CreateTodoDTO = {
   content: string;
+  due: string;
 };
 
 export type UpdateTodoDTO = {

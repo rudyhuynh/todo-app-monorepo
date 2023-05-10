@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import moment from "moment";
 import { testConnection } from "./db";
 import * as Todo from "./model/Todo";
 import {
@@ -74,14 +75,17 @@ async function main() {
    * Add a new todo
    */
   app.post("/api/todos", async (req: Request, res: Response) => {
-    const todo = req.body as CreateTodoDTO;
-    const createdTodo = await Todo.addTodo(todo.content);
+    const { content, due } = req.body as CreateTodoDTO;
+    const createdTodo = await Todo.addTodo(
+      content,
+      undefined,
+      moment(due).toDate()
+    );
     res.json(createdTodo);
   });
 
   /**
    * Update a todo.
-   * Only allow set done/undone for now
    */
   app.put("/api/todos", async (req: Request, res: Response) => {
     try {

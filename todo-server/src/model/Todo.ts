@@ -19,6 +19,10 @@ Todo.init(
     content: {
       type: DataTypes.STRING,
     },
+    due: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
     doneAt: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -34,8 +38,6 @@ export async function getTodosByDoneTimeRange(
   from: Date,
   to: Date
 ): Promise<Todo[]> {
-  console.log("from", from);
-  console.log("\t to", to);
   return await Todo.findAll({
     order: [["doneAt", "ASC"]],
     where: {
@@ -79,8 +81,8 @@ export async function getTodoById(todoId: number) {
   return await Todo.findByPk(todoId);
 }
 
-export async function addTodo(content: string, doneAt?: Date) {
-  const todo = await Todo.create({ content, doneAt });
+export async function addTodo(content: string, doneAt?: Date, due?: Date) {
+  const todo = await Todo.create({ content, doneAt, due });
   return todo.toJSON();
 }
 

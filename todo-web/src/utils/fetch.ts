@@ -30,20 +30,19 @@ const endpointFetch =
 const jsonResponseFetch =
   (fetch: GlobalFetch) => async (input: string, init?: RequestInit) => {
     const response = await fetch(input, init);
-    if (response.status === 200) {
-      try {
-        return await response.json();
-      } catch (e) {
-        console.warn(e);
-      }
+    let jsonData;
+    try {
+      jsonData = await response.json();
+    } catch (e) {
+      console.warn("[jsonResponseFetch] " + e);
     }
-    return response;
+    return [jsonData, response.status, response];
   };
 
-export const fetch: (
+export const fetch: <TResponseData>(
   url: string,
   init?: RequestInit
-) => Promise<Response | Object> = flow([
+) => Promise<[TResponseData, number, Response]> = flow([
   defaultHeadersFetch,
   endpointFetch,
   jsonResponseFetch,

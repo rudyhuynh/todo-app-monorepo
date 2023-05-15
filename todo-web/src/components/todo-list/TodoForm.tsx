@@ -1,76 +1,84 @@
-import { useState, FormEvent, Dispatch } from "react";
 import DatePicker from "react-datepicker";
-import moment from "moment";
 import { Modal } from "./Modal";
 import "react-datepicker/dist/react-datepicker.css";
 import "./TodoForm.css";
-import { fetch } from "../../utils/fetch";
-import { ActionType } from "../../typedefs";
+import { useForm, Controller } from "react-hook-form";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addTodo } from "../../services/TodoService";
 
 type TodoInputPropsType = {
-  dispatch: Dispatch<ActionType>;
-  onClose: (addTodoSuccess: boolean) => void;
+  onClose: () => void;
 };
 
-export const TodoForm = ({ dispatch, onClose }: TodoInputPropsType) => {
-  const [content, setContent] = useState("");
-  const [due, setDue] = useState<Date | null>(null);
+type FormValues = {
+  content: string;
+  due?: Date;
+};
 
-  const onSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    const response = await fetch("/api/todos", {
-      method: "post",
-      body: JSON.stringify({
-        content,
-        due,
-      }),
-    });
+export const TodoForm = ({ onClose }: TodoInputPropsType) => {
+  const queryClient = useQueryClient();
 
-    if (response instanceof Response && response.status !== 200) {
-      alert("Fail to add new todo.");
-    } else {
-      const { id, content, due } = response as any;
-      dispatch({
-        type: "add_todo",
-        id: id,
-        content: content,
-        due: due,
-      });
-      onClose(true);
+  const mutation = useMutation(addTodo);
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    // watch,
+    formState: { errors },
+  } = useForm<FormValues>();
+
+  const onSubmit = async (data: FormValues) => {
+    const { content, due } = data;
+    try {
+      await mutation.mutateAsync({ content, due });
+      await queryClient.invalidateQueries({ queryKey: ["todos"] });
+      onClose();
+    } catch (e) {
+      console.log(e);
     }
-  };
-
-  const formatDue = () => {
-    return due ? moment(due).format("DD/MM/YYYY") : "";
   };
 
   return (
     <Modal className="todo-form">
-      <form className="modal modal-fixed-footer" onSubmit={onSubmit}>
+      <form
+        className="modal modal-fixed-footer"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className="modal-content">
           <h4>Add Todo</h4>
           <div className="row">
             <div className="col s12">
+              {mutation.error instanceof Error ? (
+                <div className="error-text">
+                  <span className="red-text">{mutation.error.message}</span>
+                </div>
+              ) : null}
               <div className="row">
                 <div className="input-field col s12">
                   <input
-                    // className="invalid"
-                    autoComplete="off"
-                    name="content"
-                    type="text"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    {...register("content", { required: true })}
+                    className={errors.content ? "invalid" : ""}
                   />
-                  <label htmlFor="content">Content</label>
+                  <label htmlFor="content">Content*</label>
+                  {errors.content?.type === "required" && (
+                    <span className="red-text">Content is required</span>
+                  )}
                 </div>
-                <div className="input-field col s4">
-                  <DatePicker
+                <div className="input-field col s4 due-input-field">
+                  <Controller
                     name="due"
-                    isClearable
-                    selected={due}
-                    clearButtonClassName="btn-date-picker-clear"
-                    onChange={(date) => setDue(date)}
-                    dateFormat="yyyy/MM/dd"
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        name="due"
+                        isClearable
+                        selected={field.value}
+                        clearButtonClassName="btn-date-picker-clear"
+                        onChange={field.onChange}
+                        dateFormat="yyyy/MM/dd"
+                      />
+                    )}
                   />
                   <label htmlFor="due">Due</label>
                 </div>
@@ -79,10 +87,10 @@ export const TodoForm = ({ dispatch, onClose }: TodoInputPropsType) => {
           </div>
         </div>
         <div className="modal-footer">
-          <button className="modal-close btn-flat" onClick={onClose}>
+          <button className="modal-close btn-flat" onClick={() => onClose()}>
             Cancel
           </button>{" "}
-          <button className="btn" type="submit">
+          <button className="btn" type="submit" disabled={mutation.isLoading}>
             Submit
           </button>
         </div>

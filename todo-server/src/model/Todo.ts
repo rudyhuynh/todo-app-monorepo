@@ -1,4 +1,4 @@
-import { DataTypes, Model, Op } from "sequelize";
+import { DataTypes, Model, Op, Order } from "sequelize";
 import { sequelize } from "../db";
 import { TodoFilter } from "../typedefs";
 import { dayMs } from "../utils/timeUtils";
@@ -49,8 +49,9 @@ export async function getTodosByDoneTimeRange(
 }
 
 export async function getTodosByFilter(filter: TodoFilter): Promise<Todo[]> {
+  const order: Order = [["createdAt", "DESC"]];
   if (filter === "all") {
-    return await Todo.findAll({ order: [["createdAt", "ASC"]] });
+    return await Todo.findAll({ order });
   } else if (filter === "done") {
     return await Todo.findAll({
       where: {
@@ -58,7 +59,7 @@ export async function getTodosByFilter(filter: TodoFilter): Promise<Todo[]> {
           [Op.not]: null,
         },
       },
-      order: [["createdAt", "ASC"]],
+      order,
     });
   } else if (filter === "undone") {
     return await Todo.findAll({
@@ -67,7 +68,7 @@ export async function getTodosByFilter(filter: TodoFilter): Promise<Todo[]> {
           [Op.is]: null,
         },
       },
-      order: [["createdAt", "ASC"]],
+      order,
     });
   }
   return [];

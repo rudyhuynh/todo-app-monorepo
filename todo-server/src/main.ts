@@ -66,22 +66,32 @@ async function main() {
   });
 
   app.get("/api/todos/:id", async (req: Request, res: Response) => {
-    const id = parseInt(req.params.id);
-    const todos = await Todo.getTodoById(id);
-    res.json(todos);
+    try {
+      const id = parseInt(req.params.id);
+      const todos = await Todo.getTodoById(id);
+      res.json(todos);
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: (e as any).message });
+    }
   });
 
   /**
    * Add a new todo
    */
   app.post("/api/todos", async (req: Request, res: Response) => {
-    const { content, due } = req.body as CreateTodoDTO;
-    const createdTodo = await Todo.addTodo(
-      content,
-      undefined,
-      moment(due).toDate()
-    );
-    res.json(createdTodo);
+    try {
+      const { content, due } = req.body as CreateTodoDTO;
+      const createdTodo = await Todo.addTodo(
+        content,
+        undefined,
+        due ? moment(due).toDate() : undefined
+      );
+      res.json(createdTodo);
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: (e as any).message });
+    }
   });
 
   /**
@@ -102,10 +112,16 @@ async function main() {
     }
   });
 
-  // app.delete("/api/todos/:id", async (req: Request, res: Response) => {
-  //   const id = parseInt(req.params.id);
-  //   await Todo.destroy(id);
-  // });
+  app.delete("/api/todos/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      await Todo.destroy(id);
+      res.json({ success: true });
+    } catch (e) {
+      console.error(e);
+      res.status(500).json({ error: "Fail to update todo" });
+    }
+  });
 
   app.listen(port, function () {
     console.log(`Server started at http://localhost:${port} !`);

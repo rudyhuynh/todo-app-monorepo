@@ -15,7 +15,7 @@ export type TodoType = {
 };
 export type TodosType = TodoType[];
 
-// export type NewTodo = {
-//   content: string;
-//   due?: Date;
-// };
+export type NewTodoType = {
+  content: string;
+  due?: Date;
+};

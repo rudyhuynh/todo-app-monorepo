@@ -34,7 +34,7 @@ const jsonResponseFetch =
     try {
       jsonData = await response.json();
     } catch (e) {
-      console.warn("[jsonResponseFetch] " + e);
+      console.warn(`[jsonResponseFetch] Error: ${e}. At input: ${input}.`);
     }
     return [jsonData, response.status, response];
   };

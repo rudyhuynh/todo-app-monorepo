@@ -6,7 +6,6 @@ import { TodoListPage } from "./components/todo-list/TodoListPage";
 import { AnalyticsPage } from "./components/analytics/AnalyticsPage";
 import { NavigationBar } from "./components/shared/NavigationBar";
 import { Routes } from "./typedefs";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const routes: Routes = [
   {
@@ -21,16 +20,14 @@ const routes: Routes = [
   },
 ];
 
-const queryClient = new QueryClient();
-
 const Main = () => {
   const pathname = window.location.pathname;
   const route = routes.find((route) => route.path === pathname) || routes[0];
   return (
-    <QueryClientProvider client={queryClient}>
+    <>
       <NavigationBar routes={routes} currentRoute={route} />
       {route.element}
-    </QueryClientProvider>
+    </>
   );
 };
 

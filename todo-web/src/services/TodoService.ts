@@ -1,5 +1,5 @@
 import { fetch } from "../utils/fetch";
-import { NewTodoType, TodosType } from "../typedefs";
+import { TodosType } from "../typedefs";
 
 export async function fetchTodos(filter: string) {
   const [data, status] = await fetch<TodosType>("/api/todos?filter=" + filter);
@@ -10,10 +10,10 @@ export async function fetchTodos(filter: string) {
   }
 }
 
-export async function addTodo(newTodo: NewTodoType) {
+export async function addTodo(content: string, due: Date | null) {
   const [data, status] = await fetch("/api/todos", {
     method: "post",
-    body: JSON.stringify(newTodo),
+    body: JSON.stringify({ content, due }),
   });
   if (status === 200) {
     return data;

@@ -14,8 +14,3 @@ export type TodoType = {
   doneAt?: Date;
 };
 export type TodosType = TodoType[];
-
-export type NewTodoType = {
-  content: string;
-  due?: Date;
-};

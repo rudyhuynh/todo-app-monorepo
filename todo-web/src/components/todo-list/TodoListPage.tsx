@@ -1,82 +1,81 @@
 import "./TodoListPage.css";
-import { useState, useCallback } from "react";
+import { useState, useReducer, useEffect } from "react";
 import { TodoFilter } from "./TodoFilter";
 import type { ActionType, TodoType, TodosType } from "../../typedefs";
 import { TodoList } from "./TodoList";
 import { Loader } from "../shared/Loader";
 import { TodoForm } from "./TodoForm";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  deleteTodo,
-  fetchTodos,
-  setDoneUndone,
-} from "../../services/TodoService";
+import * as TodoService from "../../services/TodoService";
 
-// const initialTodos: TodosType = [];
-// function todosReducer(todos: TodosType, action: ActionType): TodosType {
-//   switch (action.type) {
-//     case "set_todos":
-//       return action.todos;
-//     case "add_todo":
-//       return [
-//         ...todos,
-//         {
-//           id: action.id,
-//           content: action.content,
-//           due: action.due,
-//         },
-//       ];
-//     case "set_doneAt": {
-//       const { id, doneAt } = action;
-//       return todos.map((todo) => ({
-//         ...todo,
-//         doneAt: todo.id === id ? doneAt : todo.doneAt,
-//       }));
-//     }
-//     case "delete_todo":
-//       return todos.filter((todo) => todo.id !== action.id);
-//   }
-//   return todos;
-// }
+const initialTodos: TodosType = [];
+function todosReducer(todos: TodosType, action: ActionType): TodosType {
+  switch (action.type) {
+    case "set_todos":
+      return action.todos;
+    case "add_todo":
+      return [
+        {
+          id: action.id,
+          content: action.content,
+          due: action.due,
+        },
+        ...todos,
+      ];
+    case "set_doneAt": {
+      const { id, doneAt } = action;
+      return todos.map((todo) => ({
+        ...todo,
+        doneAt: todo.id === id ? doneAt : todo.doneAt,
+      }));
+    }
+    case "delete_todo":
+      return todos.filter((todo) => todo.id !== action.id);
+  }
+  return todos;
+}
 
 export const TodoListPage = () => {
   const [filter, setFilter] = useState("all");
   const [shouldShowAddTodo, setShouldShowAddTodo] = useState(false);
 
-  // const [todos, dispatch] = useReducer(todosReducer, initialTodos);
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [errorMessage, setErrorMessage] = useState("");
+  const [todos, dispatch] = useReducer(todosReducer, initialTodos);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const queryClient = useQueryClient();
+  useEffect(() => {
+    let ignore = false;
+    async function fetchTodos() {
+      setIsLoading(true);
+      try {
+        const todos = await TodoService.fetchTodos(filter);
+        if (!ignore) dispatch({ type: "set_todos", todos });
+        setErrorMessage("");
+      } catch (e) {
+        if (e instanceof Error) setErrorMessage(e.message);
+        console.error(e);
+      }
+      setIsLoading(false);
+    }
 
-  const {
-    isLoading,
-    error,
-    data: todos,
-  } = useQuery({
-    queryKey: ["todos", filter],
-    queryFn: () => fetchTodos(filter),
-    initialData: [],
-  });
-
-  const errorMessage = error instanceof Error ? error.message : "";
-
-  const deleteTodoMutation = useMutation(deleteTodo);
+    fetchTodos();
+    return () => {
+      ignore = true;
+    };
+  }, [filter]);
 
   const onClickDoneUndone = async (id: number, todo: TodoType) => {
     const nextDone = todo.doneAt ? false : true;
     try {
-      await setDoneUndone(id, nextDone);
-      await queryClient.invalidateQueries({ queryKey: ["todos"] });
-      // dispatch({ type: "set_doneAt", id, doneAt: doneAt });
+      const updatedTodo = await TodoService.setDoneUndone(id, nextDone);
+      dispatch({ type: "set_doneAt", id, doneAt: (updatedTodo as any).doneAt });
     } catch (e) {
       alert((e as any).message);
     }
   };
 
   const onClickDelete = async (id: number) => {
-    await deleteTodoMutation.mutateAsync(id);
-    await queryClient.invalidateQueries({ queryKey: ["todos"] });
+    await TodoService.deleteTodo(id);
+    dispatch({ type: "delete_todo", id });
   };
 
   const onClickFilter = (filter: string) => {
@@ -87,7 +86,16 @@ export const TodoListPage = () => {
     setShouldShowAddTodo(true);
   };
 
-  const onCloseTodoForm = () => {
+  const onCloseTodoForm = (addedTodo?: TodoType) => {
+    if (addedTodo) {
+      dispatch({
+        type: "add_todo",
+        id: addedTodo.id,
+        content: addedTodo.content,
+        due: addedTodo.due,
+      });
+    }
+
     setShouldShowAddTodo(false);
   };
 
@@ -110,7 +118,7 @@ export const TodoListPage = () => {
               todos={todos}
               onClickDoneUndone={onClickDoneUndone}
               onClickDelete={onClickDelete}
-              disabled={isLoading || deleteTodoMutation.isLoading}
+              disabled={isLoading}
             />
           ) : null}
         </div>

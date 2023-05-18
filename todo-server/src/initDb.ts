@@ -103,12 +103,17 @@ const todos = [
     content: "Write Unit Test",
     doneAt: moment(startOfLastWeek).add(5, "day").toDate(),
   },
-];
+].map((todo) => {
+  return {
+    ...todo,
+    due: moment(todo.doneAt).add(1, "day").toDate(),
+  };
+});
 
 export async function initDb() {
   await Todo.forceSync();
   for (let todo of todos) {
-    await Todo.addTodo(todo.content, todo.doneAt);
+    await Todo.addTodo(todo.content, todo.doneAt, todo.due);
   }
   console.log(
     "\x1b[32m%s\x1b[0m",

@@ -7,6 +7,7 @@ class Todo extends Model {
   declare id: number;
   declare content: string;
   declare doneAt: Date | null;
+  declare due: Date | null;
 }
 
 Todo.init(

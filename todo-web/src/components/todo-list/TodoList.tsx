@@ -8,10 +8,6 @@ type TodoListProps = {
   disabled: boolean;
 };
 
-export type TodoListForwardedRefObject = {
-  scrollToBottom: () => void;
-};
-
 export const TodoList = (props: TodoListProps) => {
   const { todos, onClickDoneUndone, onClickDelete, disabled } = props;
 

@@ -1,9 +1,9 @@
-import DatePicker from "react-datepicker";
-import { Modal } from "./Modal";
 import "react-datepicker/dist/react-datepicker.css";
 import "./TodoForm.css";
-import * as TodoService from "../../services/TodoService";
 import { FormEvent, useState } from "react";
+import DatePicker from "react-datepicker";
+import { Modal } from "./Modal";
+import * as TodoService from "../../services/TodoService";
 import { TodoType } from "../../typedefs";
 
 type TodoInputPropsType = {
@@ -48,7 +48,7 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
                 </div>
                 <div className="input-field col s4 due-input-field">
                   <DatePicker
-                    name="due"
+                    name="dueDate"
                     isClearable
                     selected={dueDate}
                     clearButtonClassName="btn-date-picker-clear"

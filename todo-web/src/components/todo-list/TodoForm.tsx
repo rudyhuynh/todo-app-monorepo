@@ -12,7 +12,7 @@ type TodoInputPropsType = {
 
 export const TodoForm = ({ onClose }: TodoInputPropsType) => {
   const [content, setContent] = useState("");
-  const [due, setDue] = useState<Date | null>(null);
+  const [dueDate, setDueDate] = useState<Date | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   const onSubmit = async (e: FormEvent) => {
@@ -40,8 +40,6 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
               <div className="row">
                 <div className="input-field col s12">
                   <input
-                    // className="invalid"
-                    autoComplete="off"
                     name="content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
@@ -52,14 +50,13 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
                   <DatePicker
                     name="due"
                     isClearable
-                    autoComplete="off"
-                    selected={due}
+                    selected={dueDate}
                     clearButtonClassName="btn-date-picker-clear"
-                    onChange={(date) => setDue(date)}
+                    onChange={(date) => setDueDate(date)}
                     dateFormat="yyyy/MM/dd"
                     minDate={new Date()}
                   />
-                  <label htmlFor="due">Due</label>
+                  <label htmlFor="due">Due Date</label>
                 </div>
               </div>
             </div>

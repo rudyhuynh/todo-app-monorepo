@@ -56,7 +56,7 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
                     dateFormat="yyyy/MM/dd"
                     minDate={new Date()}
                   />
-                  <label htmlFor="due">Due Date</label>
+                  <label htmlFor="dueDate">Due Date</label>
                 </div>
               </div>
             </div>

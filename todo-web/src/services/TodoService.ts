@@ -11,10 +11,10 @@ export async function fetchTodos(filter: string) {
   }
 }
 
-export async function addTodo(content: string, due: Date | null) {
+export async function addTodo(content: string, due?: Date | null) {
   const [data, status] = await fetch("/api/todos", {
     method: "post",
-    body: JSON.stringify({ content, due }),
+    body: JSON.stringify({ content, ...(due && { due }) }),
   });
   if (status === 200) {
     const { id, content, due } = (data as any) || {};

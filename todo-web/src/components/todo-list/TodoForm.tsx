@@ -1,6 +1,5 @@
 import DatePicker from "react-datepicker";
 import { Modal } from "./Modal";
-import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import "./TodoForm.css";
 import * as TodoService from "../../services/TodoService";
@@ -19,14 +18,8 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const addedTodo: any = await TodoService.addTodo(content, due);
-      onClose({
-        id: addedTodo.id,
-        content: addedTodo.content,
-        ...(addedTodo.due && {
-          due: moment(addedTodo.due).toDate(),
-        }),
-      } as TodoType);
+      const addedTodo = await TodoService.addTodo(content, due);
+      onClose(addedTodo);
     } catch (e) {
       setErrorMessage((e as any).message);
     }
@@ -48,6 +41,7 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
                 <div className="input-field col s12">
                   <input
                     // className="invalid"
+                    autoComplete="off"
                     name="content"
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
@@ -58,10 +52,12 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
                   <DatePicker
                     name="due"
                     isClearable
+                    autoComplete="off"
                     selected={due}
                     clearButtonClassName="btn-date-picker-clear"
                     onChange={(date) => setDue(date)}
                     dateFormat="yyyy/MM/dd"
+                    minDate={new Date()}
                   />
                   <label htmlFor="due">Due</label>
                 </div>

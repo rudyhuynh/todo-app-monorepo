@@ -18,7 +18,7 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      const addedTodo = await TodoService.addTodo(content, due);
+      const addedTodo = await TodoService.addTodo(content, dueDate);
       onClose(addedTodo);
     } catch (e) {
       setErrorMessage((e as any).message);

@@ -66,8 +66,8 @@ export const TodoListPage = () => {
   const onClickDoneUndone = async (id: number, todo: TodoType) => {
     const nextDone = todo.doneAt ? false : true;
     try {
-      const updatedTodo = await TodoService.setDoneUndone(id, nextDone);
-      dispatch({ type: "set_doneAt", id, doneAt: (updatedTodo as any).doneAt });
+      const doneAt = await TodoService.setDoneUndone(id, nextDone);
+      dispatch({ type: "set_doneAt", id, doneAt });
     } catch (e) {
       alert((e as any).message);
     }

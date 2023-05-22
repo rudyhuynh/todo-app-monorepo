@@ -32,23 +32,27 @@ export async function addTodo(content: string, due?: Date | null) {
 }
 
 export async function deleteTodo(id: number) {
-  const [data, status] = await fetch("/api/todos/" + id, {
+  const [, status] = await fetch("/api/todos/" + id, {
     method: "delete",
   });
   if (status === 200) {
-    return data;
+    return true;
   } else {
     throw new Error("Fail to delete todo");
   }
 }
 
+type PutTodoResponse = {
+  id: number;
+  doneAt: string | null;
+};
 export async function setDoneUndone(id: number, done: boolean) {
-  const [data, status] = await fetch("/api/todos", {
+  const [data, status] = await fetch<PutTodoResponse>("/api/todos", {
     method: "put",
     body: JSON.stringify({ id, done }),
   });
   if (status === 200) {
-    return data;
+    return data.doneAt;
   } else {
     throw new Error("Fail to update todo");
   }

@@ -1,11 +1,27 @@
 import { fetch } from "../utils/fetch";
-import { TodoType, TodosType } from "../typedefs";
+import { TodoType } from "../typedefs";
 import moment from "moment";
 
+type FetchTodoResponse = Array<{
+  id: number;
+  content: string;
+  doneAt: string | null;
+  due: string | null;
+}>;
 export async function fetchTodos(filter: string) {
-  const [data, status] = await fetch<TodosType>("/api/todos?filter=" + filter);
+  const [data, status] = await fetch<FetchTodoResponse>(
+    "/api/todos?filter=" + filter
+  );
   if (status === 200) {
-    return data;
+    return data.map((item) => {
+      const todo: TodoType = {
+        id: item.id,
+        content: item.content,
+        ...(item.due && { due: moment(item.due).toDate() }),
+        ...(item.doneAt && { doneAt: moment(item.doneAt).toDate() }),
+      };
+      return todo;
+    });
   } else {
     throw new Error("Fail to fetch todo");
   }
@@ -21,24 +37,11 @@ export async function addTodo(content: string, due?: Date | null) {
     const todo: TodoType = {
       id: id,
       content: content,
-      ...(due && {
-        due: moment(due).toDate(),
-      }),
+      ...(due && { due: moment(due).toDate() }),
     };
     return todo;
   } else {
     throw new Error("Fail to add new todo");
-  }
-}
-
-export async function deleteTodo(id: number) {
-  const [, status] = await fetch("/api/todos/" + id, {
-    method: "delete",
-  });
-  if (status === 200) {
-    return true;
-  } else {
-    throw new Error("Fail to delete todo");
   }
 }
 
@@ -55,5 +58,16 @@ export async function setDoneUndone(id: number, done: boolean) {
     return data.doneAt;
   } else {
     throw new Error("Fail to update todo");
+  }
+}
+
+export async function deleteTodo(id: number) {
+  const [, status] = await fetch("/api/todos/" + id, {
+    method: "delete",
+  });
+  if (status === 200) {
+    return true;
+  } else {
+    throw new Error("Fail to delete todo");
   }
 }

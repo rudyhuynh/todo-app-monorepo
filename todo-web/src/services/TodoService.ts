@@ -1,5 +1,5 @@
 import { fetch } from "../utils/fetch";
-import { TodoType } from "../typedefs";
+import { TodoType, TodosType } from "../typedefs";
 import moment from "moment";
 
 type FetchTodoResponse = Array<{
@@ -8,7 +8,7 @@ type FetchTodoResponse = Array<{
   doneAt: string | null;
   due: string | null;
 }>;
-export async function fetchTodos(filter: string) {
+export async function fetchTodos(filter: string): Promise<TodosType> {
   const [data, status] = await fetch<FetchTodoResponse>(
     "/api/todos?filter=" + filter
   );

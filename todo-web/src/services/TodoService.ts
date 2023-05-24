@@ -13,15 +13,12 @@ export async function fetchTodos(filter: string): Promise<TodosType> {
     "/api/todos?filter=" + filter
   );
   if (status === 200) {
-    return data.map((item) => {
-      const todo: TodoType = {
-        id: item.id,
-        content: item.content,
-        ...(item.due && { due: moment(item.due).toDate() }),
-        ...(item.doneAt && { doneAt: moment(item.doneAt).toDate() }),
-      };
-      return todo;
-    });
+    return data.map<TodoType>((item) => ({
+      id: item.id,
+      content: item.content,
+      ...(item.due && { due: moment(item.due).toDate() }),
+      ...(item.doneAt && { doneAt: moment(item.doneAt).toDate() }),
+    }));
   } else {
     throw new Error("Fail to fetch todo");
   }

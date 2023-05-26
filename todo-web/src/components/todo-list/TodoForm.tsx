@@ -1,33 +1,53 @@
 import "react-datepicker/dist/react-datepicker.css";
 import "./TodoForm.css";
-import { FormEvent, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Modal } from "./Modal";
 import * as TodoService from "../../services/TodoService";
 import { TodoType } from "../../typedefs";
+import { useForm, Controller } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
 
 type TodoInputPropsType = {
   onClose: (addedTodo?: TodoType) => void;
 };
 
-export const TodoForm = ({ onClose }: TodoInputPropsType) => {
-  const [content, setContent] = useState("");
-  const [dueDate, setDueDate] = useState<Date | null>(null);
-  const [errorMessage, setErrorMessage] = useState("");
+type TodoFormInputs = {
+  content: string;
+  dueDate: Date | null;
+};
 
-  const onSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    try {
-      const addedTodo = await TodoService.addTodo(content, dueDate);
-      onClose(addedTodo);
-    } catch (e) {
-      setErrorMessage((e as any).message);
-    }
+export const TodoForm = ({ onClose }: TodoInputPropsType) => {
+  const { register, handleSubmit, formState, control } =
+    useForm<TodoFormInputs>();
+  const { errors } = formState;
+
+  // const queryClient = useQueryClient()
+  // const allTodos = queryClient.getQueryData(['todos', 'all'])
+
+  const { mutateAsync, isLoading, error } = useMutation({
+    mutationFn: (data: TodoFormInputs) =>
+      TodoService.addTodo(data.content, data.dueDate),
+    // async or return promise
+  });
+  const errorMessage = (error as Error)?.message;
+
+  const onSubmit = async (data: TodoFormInputs) => {
+    const addedTodo = await mutateAsync(data);
+    onClose(addedTodo);
+    // try {
+    //   const addedTodo = await TodoService.addTodo(data.content, data.dueDate);
+    //   onClose(addedTodo);
+    // } catch (e) {
+    //   setErrorMessage((e as any).message);
+    // }
   };
 
   return (
     <Modal className="todo-form">
-      <form className="modal modal-fixed-footer" onSubmit={onSubmit}>
+      <form
+        className="modal modal-fixed-footer"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className="modal-content">
           <h4>Add Todo</h4>
           <div className="row">
@@ -40,22 +60,33 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
               <div className="row">
                 <div className="input-field col s12">
                   <input
-                    name="content"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
+                    {...register("content", { required: true })}
+                    className={
+                      errors.content?.type === "required" ? "invalid" : ""
+                    }
                   />
                   <label htmlFor="content">Content*</label>
+                  {errors.content?.type === "required" && (
+                    <span className="red-text">Content is required</span>
+                  )}
                 </div>
                 <div className="input-field col s4 due-input-field">
-                  <DatePicker
+                  <Controller
                     name="dueDate"
-                    isClearable
-                    selected={dueDate}
-                    clearButtonClassName="btn-date-picker-clear"
-                    onChange={(date) => setDueDate(date)}
-                    dateFormat="yyyy/MM/dd"
-                    minDate={new Date()}
+                    control={control}
+                    render={({ field }) => (
+                      <DatePicker
+                        name={field.name}
+                        isClearable
+                        selected={field.value}
+                        clearButtonClassName="btn-date-picker-clear"
+                        onChange={field.onChange}
+                        dateFormat="yyyy/MM/dd"
+                        minDate={new Date()}
+                      />
+                    )}
                   />
+
                   <label htmlFor="dueDate">Due Date</label>
                 </div>
               </div>
@@ -66,7 +97,7 @@ export const TodoForm = ({ onClose }: TodoInputPropsType) => {
           <button className="modal-close btn-flat" onClick={() => onClose()}>
             Cancel
           </button>{" "}
-          <button className="btn" type="submit">
+          <button className="btn" type="submit" disabled={isLoading}>
             Submit
           </button>
         </div>

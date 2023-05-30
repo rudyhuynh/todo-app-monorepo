@@ -5,17 +5,12 @@
 1. Clone the repo
 
 ```
-git clone git@github.com:rudyhuynh/todo-app-monorepo.git
-```
-
-or
-
-```
 git clone https://github.com/rudyhuynh/todo-app-monorepo.git
 ```
 
 2. Run at root directory: `npm install`
 
-3. To start server: `npm run start-server`
+3. Run the below in two separated terminal:
 
-4. To start web: `npm run start-web`
+`npm run start-server`
+`npm run start-web` --> Then go to the URL in the terminal.

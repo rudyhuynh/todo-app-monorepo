@@ -1,5 +1,10 @@
 # Todo App Monorepo
 
+## Your machine have to install:
+
+- Git: https://git-scm.com/
+- NodeJS: https://nodejs.org/
+
 ## Getting Started
 
 1. Clone the repo
